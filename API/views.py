@@ -1,5 +1,4 @@
 import pickle
-
 import pandas as pd
 from django.shortcuts import render
 from rest_framework import status
@@ -9,7 +8,7 @@ from rest_framework.response import Response
 from .forms import CustomerForm
 from .models import Customer
 from .serializer import CustomerSerializers
-
+from .task import MLResualt
 
 class CustomerView(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
@@ -39,7 +38,7 @@ def FormView(request):
             EstimatedSalary = form.cleaned_data['salary']
             df = pd.DataFrame({'gender': [Gender], 'age': [Age], 'salary': [EstimatedSalary]})
             df["gender"] = 1 if "male" else 2
-            result = status(df)
+            result = MLResualt(df)
             return render(request, 'status.html', {"data": result})
 
     form = CustomerForm()
